@@ -5,7 +5,6 @@
 const express         = require('express');
 const logger          = require('morgan');
 const bodyParser      = require('body-parser');
-const pgPromise       = require('pg-promise');
 const path            = require('path');
 const homeRoute       = require('./routes/index');
 const taskRoute       = require('./routes/tasks');

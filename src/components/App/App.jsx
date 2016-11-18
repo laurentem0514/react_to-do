@@ -3,6 +3,7 @@ import Nav       from '../Nav/Nav';
 import TaskForm  from '../TaskForm';
 import Footer    from '../Footer/Footer';
 import TaskList  from '../TaskList';
+import AjaxAdapter from '../../Helpers/AjaxAdapter';
 
 import './App.css';
 import './GA_gear.png';
@@ -26,20 +27,24 @@ export default class App extends React.Component {
     this.addTask = this.addTask.bind(this);
   }
 
+  componentDidMount() {
+    AjaxAdapter.getTasks()
+    .then(allTasks =>
+      this.setState({ tasks: allTasks })
+      )
+    .catch((error) => {
+      throw error;
+    });
+  }
+
+
   addTask(name, desc) {
 
-    fetch('/tasks', {
-      method: 'post',
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      },
-      body: JSON.stringify({name, desc})
-    })
-      .then(r => r.json())
+    AjaxAdapter.createTask({ name, desc })
       .then((newTask) => {
-        const newState = {...this.state.tasks};
+        const newState = { ...this.state.tasks };
         newState[newTask.id] = newTask;
-        this.setState({tasks: newState});
+        this.setState({ tasks: newState });
         })
       .catch((error) => {
         throw error;
@@ -63,19 +68,28 @@ export default class App extends React.Component {
         {/* these are the open tasks*/}
             <article className="col-md-4">
               <h3>Open Items</h3>
-              <TaskList collection={this.state.tasks} />
+              <TaskList
+                filter={task => !task.completed && !task.deleted}
+                collection={this.state.tasks}
+              />
             </article>
 
    {/* these are the completed tasks*/}
             <article className="col-md-4">
               <h3>Completed Items</h3>
-              <TaskList collection={this.state.tasks} />
+              <TaskList
+                filter={task => task.completed && !task.deleted}
+                collection={this.state.tasks}
+              />
             </article>
 
    {/* these are the deleted tasks*/}
             <article className="col-md-4">
               <h3>Deleted Items</h3>
-              <TaskList collection={this.state.tasks} />
+              <TaskList
+                filter={task => task.deleted}
+                collection={this.state.tasks}
+              />
             </article>
           </section>
         </main>

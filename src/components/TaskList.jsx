@@ -1,8 +1,11 @@
 import React from 'react';
 import Task from './Task';
 
-const generateTasks = (collection) =>
-  Object.keys(collection)
+const TaskList = props => {
+
+  const generateTasks = collection =>
+   Object.keys(collection)
+      .filter(taskID => props.filter(collection[taskID]))
       .map((taskID, i) => (
           <Task
             key={i}
@@ -10,11 +13,11 @@ const generateTasks = (collection) =>
             desc={collection[taskID].description}
           />
       ));
-
-const TaskList = props => (
-  <div className="list-group">
-    {generateTasks(props)}
-  </div>
-);
+  return (
+    <div className="list-group">
+      {generateTasks(props.collection)}
+    </div>
+  );
+}
 
 export default TaskList;

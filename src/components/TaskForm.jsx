@@ -1,7 +1,20 @@
 import React from 'react';
 
-const TaskForm = (props) => (
-  <form className="form-inline" onSubmit={(e)=>console.log(e)}>
+export default function TaskForm(props) {
+  const handleSubmit = (event) => {
+  // stop event from leaving the form and keep page from refreshing
+  event.preventDefault();
+
+  props.addTask(
+    event.target.taskName.value,
+    event.target.taskDesc.value
+    );
+  // from any event handler this will also kill the event
+  return false;
+};
+
+  return (
+  <form className="form-inline" onSubmit={handleSubmit}>
 
     <div className="form-group">
       <label className="sr-only" htmlFor="taskName">Task Name</label>
@@ -14,6 +27,7 @@ const TaskForm = (props) => (
     </div>
     <button type="submit" className="btn btn-danger btn-lg">Add Task</button>
   </form>
-);
+  );
+}
 
-export default TaskForm;
+
